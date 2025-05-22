@@ -1,0 +1,71 @@
+name: Android-APK-FlutterApp
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: 🎉 Android Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          architecture: x64
+
+      - run: flutter pub get
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Build APK with Obfuscation
+        run: |
+          flutter build apk --release \
+          --obfuscate \
+          --split-debug-info=./build/app/outputs/symbols \
+          --split-per-abi
+
+      - name: Rename APKs for upload
+        run: |
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/flutter_app-arm64-v8a.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/flutter_app-armeabi-v7a.apk
+          mv build/app/outputs/flutter-apk/app-x86_64-release.apk build/app/outputs/flutter-apk/flutter_app-x86_64.apk
+
+      - name: Upload ARM64 APK
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/flutter-apk/flutter_app-arm64-v8a.apk
+          tag: v1.0.0
+          overwrite: true
+          body: "This release includes obfuscated APKs for better security"
+
+      - name: Upload ARMEABI APK
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/flutter-apk/flutter_app-armeabi-v7a.apk
+          tag: v1.0.0
+          overwrite: true
+          body: "This release includes obfuscated APKs for better security"
+
+      - name: Upload x86_64 APK
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/flutter-apk/flutter_app-x86_64.apk
+          tag: v1.0.0
+          overwrite: true
+          body: "This release includes obfuscated APKs for better security"
+
+      - name: Upload mapping files (for crash debugging)
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: debug-symbols
+          path: build/app/outputs/symbols/
+          if-no-files-found: warn
