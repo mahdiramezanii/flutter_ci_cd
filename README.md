@@ -26,6 +26,19 @@ The main purpose of this repo is to demonstrate how to automate building and rel
 | iOS | `build/ios/iphoneos/Runner.app` or exported IPA |
 | Debug Symbols | `build/app/outputs/symbols/` |
 
+
+
+
+---
+
+## 📌 Usage Note
+
+To use this CI/CD setup, simply add the workflow files from the `.github/workflows/` folder to your own repository,  
+then trigger or monitor the workflows from the **Actions** tab in GitHub.  
+The build outputs (APKs, AABs, debug symbol files, etc.) will be automatically uploaded to the **Releases** section on GitHub.
+
+---
+
 ---
 
 ## 🛠 Build Instructions (Manual)
