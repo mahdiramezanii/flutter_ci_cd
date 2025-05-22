@@ -120,4 +120,4 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 
 
-> Maintained with ❤️ by [YourName or Organization]
+> Maintained with ❤️ by Mahdi Ramezani
