@@ -15,7 +15,7 @@ The main purpose of this repo is to demonstrate how to automate building and rel
 
 ---
 
----
+
 
 ## 📦 Output Formats
 
@@ -39,7 +39,7 @@ The build outputs (APKs, AABs, debug symbol files, etc.) will be automatically u
 
 ---
 
----
+
 
 ## 🛠 Build Instructions (Manual)
 
