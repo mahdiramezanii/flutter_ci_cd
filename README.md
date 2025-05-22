@@ -1,18 +1,19 @@
-# 📱 flutter_app
+# 📱 flutter_app CI/CD Boilerplate
 
-A modern, cross-platform Flutter application built with Firebase, notifications, and clean architecture.  
-This app is ready for production with CI/CD support for APK, AAB, and iOS builds.
+This project is a simple, ready-to-use boilerplate for setting up **CI/CD** with Flutter.  
+The main purpose of this repo is to demonstrate how to automate building and releasing **APK**, **AAB**, and **iOS** apps using **GitHub Actions**.
 
 ---
 
 ## 🚀 Features
 
-- 🔥 Firebase integration (auth, messaging, etc.)
-- 🛎 Local notifications via `flutter_local_notifications`
-- 🔐 Obfuscation for secure builds
-- 📦 CI/CD GitHub Actions for APK, AAB, and iOS
-- 📁 Debug symbols for crash reporting
-- 🧱 Split-per-ABI builds to reduce APK size
+- Quick CI/CD setup for Flutter
+- Automatic APK and AAB builds for Android
+- Automatic iOS builds (requires macOS and Xcode)
+- Supports obfuscation and debug symbols for better security and debugging
+- Ready to use with GitHub Actions
+
+---
 
 ---
 
@@ -22,7 +23,7 @@ This app is ready for production with CI/CD support for APK, AAB, and iOS builds
 |--------|------|
 | APK | `build/app/outputs/flutter-apk/flutter_app-*.apk` |
 | AAB | `build/app/outputs/bundle/release/app-release.aab` |
-| iOS Archive | `build/ios/iphoneos/Runner.app` (or exported IPA) |
+| iOS | `build/ios/iphoneos/Runner.app` or exported IPA |
 | Debug Symbols | `build/app/outputs/symbols/` |
 
 ---
@@ -71,6 +72,15 @@ See `.github/workflows/` directory.
 
 ---
 
+
+## ⚠️ Important
+
+To enable GitHub Actions to upload your build artifacts (APKs, AABs, etc.) to releases,  
+you **must** enable **Write** permission for GitHub Actions in your repository settings.  
+Otherwise, the upload step will fail due to insufficient permissions.
+
+---
+
 ## 📦 Release Example
 
 Each GitHub Release includes:
@@ -95,4 +105,6 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 ---
 
-> Maintained with ❤️ by [Mahdi Ramezani]
+
+
+> Maintained with ❤️ by [YourName or Organization]
