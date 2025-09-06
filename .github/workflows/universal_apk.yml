@@ -1,0 +1,84 @@
+name: Android-APK-FlutterApp
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: 🎉 Android Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    permissions:
+      contents: write
+
+    env:
+      JAVA_VERSION: '17'
+      FLUTTER_CHANNEL: stable
+
+    steps:
+      # 1. Checkout Code
+      - uses: actions/checkout@v3
+
+      # 2. Setup Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          architecture: x64
+
+      # 3. Cache Dependencies
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ${{ env.PUB_CACHE }}
+          key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.lock') }}
+
+      # 4. Install Packages
+      - run: flutter pub get
+
+      # 5. Setup Java
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 6. Build APK (single universal)
+      - name: Build Universal APK
+        run: |
+          flutter build apk --release \
+          --obfuscate \
+          --split-debug-info=build/app/outputs/symbols \
+          --no-tree-shake-icons
+
+      # 7. Rename APK
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/flutter_app-universal.apk
+
+      # 8. Create Release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.${{ github.run_number }}
+          name: "v1.${{ github.run_number }}"
+          body: "Automated universal APK release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 9. Upload APK to Release
+      - name: Upload Universal APK
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/flutter-apk/flutter_app-universal.apk
+          tag: v1.${{ github.run_number }}
+          overwrite: true
+
+      # 10. Upload Mapping Files (for crash debugging)
+      - name: Upload Mapping Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-symbols
+          path: build/app/outputs/symbols/
+          if-no-files-found: warn
